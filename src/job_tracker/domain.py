@@ -1,7 +1,6 @@
 from dataclasses import dataclass
 from enum import StrEnum
 
-
 from typing import Protocol
 
 
@@ -49,12 +48,13 @@ class Vacancy:
 
 @dataclass
 class Application:
+    """Сущность Application"""
     id: str
     status: ApplicationStatus = ApplicationStatus.SAVED
 
-    def move_to(self, new: ApplicationStatus) -> None:  # метод сущности Application
+    def move_to(self, new: ApplicationStatus) -> None:
         if new == self.status:
-            return  # повтор ничего не меняет
+            return
         if new not in ALLOWED[self.status]:
             raise TransitionError(
                 f"нельзя перейти из {self.status} в {new}; "
