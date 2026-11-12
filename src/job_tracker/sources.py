@@ -13,8 +13,8 @@ class FixedSource:
     """Фиксированный источник вакансий"""
     def fetch(self) -> list[Vacancy]:
         return [
-            Vacancy(ID="VID-000001", title="Python", salary=120000, status=Status.OPEN),
-            Vacancy(ID="VID-000002", title="Java", salary=150000, status=Status.CLOSED),
+            Vacancy(id="VID-000001", title="Python", salary=120000, status=Status.OPEN),
+            Vacancy(id="VID-000002", title="Java", salary=150000, status=Status.CLOSED),
         ]
 
 
