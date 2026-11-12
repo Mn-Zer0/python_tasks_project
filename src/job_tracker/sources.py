@@ -48,3 +48,5 @@ def make_source(config: Literal["json", "fixed"], path: Path | None = None) -> V
             if path is None:
                 raise ValueError("для источника 'json' нужен путь к файлу")
             return JsonFileSource(path)
+        case _:
+            raise ValueError("неизвестный источник")
