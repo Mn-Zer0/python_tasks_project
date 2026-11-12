@@ -7,7 +7,6 @@ from typing import Protocol
 
 class Status(StrEnum):
     """Статус вакансии"""
-
     OPEN = "open"
     CLOSED = "closed"
 
@@ -30,7 +29,7 @@ class DomainError(Exception):
 class Vacancy:
     """Вакансия - доменная сущность"""
 
-    ID: str
+    id: str
     title: str
     salary: int
     status: Status
@@ -50,7 +49,7 @@ class Vacancy:
 
 @dataclass
 class Application:
-    vacancy_id: str
+    id: str
     status: ApplicationStatus = ApplicationStatus.SAVED
 
     def move_to(self, new: ApplicationStatus) -> None:  # метод сущности Application
@@ -82,7 +81,9 @@ class TransitionError(Exception):
 ALLOWED: dict[ApplicationStatus, frozenset[ApplicationStatus]] = {
     ApplicationStatus.SAVED: frozenset({ApplicationStatus.APPLIED}),
     ApplicationStatus.APPLIED: frozenset({ApplicationStatus.INTERVIEW, ApplicationStatus.REJECTED}),
-    ApplicationStatus.INTERVIEW: frozenset({ApplicationStatus.OFFER, ApplicationStatus.REJECTED})
+    ApplicationStatus.INTERVIEW: frozenset({ApplicationStatus.OFFER, ApplicationStatus.REJECTED}),
+    ApplicationStatus.REJECTED: frozenset({}),
+    ApplicationStatus.OFFER: frozenset({}),
 }
 
 
