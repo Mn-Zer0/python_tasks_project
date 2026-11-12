@@ -23,11 +23,11 @@ def main() -> None:
 
     if filtered:
         for vacancy in filtered:
-            print(vacancy.ID, vacancy.title, vacancy.salary, vacancy.status)
+            print(vacancy.id, vacancy.title, vacancy.salary, vacancy.status)
     else:
         print("Записи не найдены")
 
-    app = Application(vacancy_id="VID-000001")
+    app = Application(id="VID-000001")
     app.move_to(ApplicationStatus.APPLIED)
     print(app.status)
 
