@@ -5,7 +5,7 @@ from .schemas import ValidatedVacancy
 def to_vacancy(raw: ValidatedVacancy) -> Vacancy:
     """Преобразует валидированную внешнюю модель в доменную сущность"""
     return Vacancy(
-        ID=raw.id,
+        id=raw.id,
         title=raw.title,
         salary=raw.salary,
         status=raw.status,
