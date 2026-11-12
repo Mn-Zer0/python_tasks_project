@@ -32,13 +32,17 @@ check_untyped_defs = true
 
 [[tool.mypy.overrides]]
 module = ["job_tracker.domain", "job_tracker.schemas"]
-
 disallow_untyped_defs = true      # все функции должны иметь аннотации
 disallow_incomplete_defs = true   # аннотации должны быть полными
 disallow_untyped_calls = true     # нельзя вызывать функции без аннотаций
 disallow_any_generics = true      # нельзя использовать "голый" list, dict без параметров
 warn_return_any = true            # предупреждать, если возвращается Any
 strict_equality = true            # строгая проверка на равенство
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra --strict-markers"
+markers = ["integration: тесты с настоящей БД и отдельными процессами"]
 
 [build-system]
 requires = ["uv_build>=0.13.7,<0.14.0"]
@@ -48,5 +52,7 @@ build-backend = "uv_build"
 dev = [
     "mypy>=2.4.1",
     "pre-commit>=4.6.2",
+    "pytest>=9.2.0",
+    "pytest-cov>=7.1.0",
     "ruff>=0.17.3",
 ]
