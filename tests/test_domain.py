@@ -1,7 +1,7 @@
 import pytest
 from pydantic import ValidationError
 from job_tracker.schemas import ValidatedVacancy
-from job_tracker.domain import Status, DomainError, Application, ApplicationStatus, TransitionError, Vacancy
+from job_tracker.domain import Status, DomainError, Application, ApplicationStatus, TransitionError
 from job_tracker.application import to_vacancy
 
 
@@ -43,58 +43,50 @@ def test_vacancy_types():
 
 # Тесты to_vacancy (преобразование ValidatedVacancy - pydantic модели в Vacancy)
 
-def test_to_vacancy_id():
+def test_to_vacancy_id(valid_vacancy_model):
     """Тест соответствия ValidatedVacancy.id и Vacancy.id"""
-    pydantic_model = ValidatedVacancy(id="VID-000001", title="title", salary=100, status=Status.OPEN)
-    vacancy_model = to_vacancy(pydantic_model)
-    assert pydantic_model.id == vacancy_model.id
+    vacancy_model = to_vacancy(valid_vacancy_model)
+    assert vacancy_model.id == "VID-000001"
 
-def test_to_vacancy_title():
+def test_to_vacancy_title(valid_vacancy_model):
     """Тест соответствия ValidatedVacancy.title и Vacancy.title"""
-    pydantic_model = ValidatedVacancy(id="VID-000001", title="title", salary=100, status=Status.OPEN)
-    vacancy_model = to_vacancy(pydantic_model)
-    assert pydantic_model.title == vacancy_model.title
+    vacancy_model = to_vacancy(valid_vacancy_model)
+    assert vacancy_model.title == "Python Разработчик"
 
-def test_to_vacancy_salary():
+def test_to_vacancy_salary(valid_vacancy_model):
     """Тест соответствия ValidatedVacancy.salary и Vacancy.salary"""
-    pydantic_model = ValidatedVacancy(id="VID-000001", title="title", salary=100, status=Status.OPEN)
-    vacancy_model = to_vacancy(pydantic_model)
-    assert pydantic_model.salary == vacancy_model.salary
+    vacancy_model = to_vacancy(valid_vacancy_model)
+    assert vacancy_model.salary == 100000
 
-def test_to_vacancy_status():
+def test_to_vacancy_status(valid_vacancy_model):
     """Тест соответствия ValidatedVacancy.status и Vacancy.status"""
-    pydantic_model = ValidatedVacancy(id="VID-000001", title="title", salary=100, status=Status.OPEN)
-    vacancy_model = to_vacancy(pydantic_model)
-    assert pydantic_model.status is vacancy_model.status
+    vacancy_model = to_vacancy(valid_vacancy_model)
+    assert vacancy_model.status is Status.OPEN
 
 
 # Тесты Vacancy (close/open)
 
-def test_vacancy_status_closed():
+def test_vacancy_status_closed(open_vacancy):
     """Проверка закрытия Vacancy"""
-    v = Vacancy(id="VID-000001", title="title", salary=100, status=Status.OPEN)
-    v.close()
-    assert v.status is Status.CLOSED
+    open_vacancy.close()
+    assert open_vacancy.status is Status.CLOSED
 
-def test_vacancy_status_open():
+def test_vacancy_status_open(closed_vacancy):
     """Проверка открытия Vacancy"""
-    v = Vacancy(id="VID-000001", title="title", salary=100, status=Status.CLOSED)
-    v.open()
-    assert v.status is Status.OPEN
+    closed_vacancy.open()
+    assert closed_vacancy.status is Status.OPEN
 
-def test_vacancy_status_closed_to_closed():
+def test_vacancy_status_closed_to_closed(closed_vacancy):
     """Проверка закрытия Vacancy когда статус уже closed"""
-    v = Vacancy(id="VID-000001", title="title", salary=100, status=Status.CLOSED)
     with pytest.raises(DomainError):
-        v.close()
-    assert v.status is Status.CLOSED
+        closed_vacancy.close()
+    assert closed_vacancy.status is Status.CLOSED
 
-def test_vacancy_status_open_to_open():
+def test_vacancy_status_open_to_open(open_vacancy):
     """Проверка открытия Vacancy когда статус уже open"""
-    v = Vacancy(id="VID-000001", title="title", salary=100, status=Status.OPEN)
     with pytest.raises(DomainError):
-        v.open()
-    assert v.status is Status.OPEN
+        open_vacancy.open()
+    assert open_vacancy.status is Status.OPEN
 
 
 ## Тесты таблицы переходов (Application)
@@ -117,6 +109,7 @@ def test_application_allowed(current, new):
     app = Application(id="VID-000001", status=current)
     app.move_to(new)
     assert app.status is new
+
 
 # Недопустимые переходы и проверка сохранения их предыдущего допустимого состояния
 
@@ -157,12 +150,14 @@ def test_application_forbidden(current, new):
         app.move_to(new)
     assert app.status is current
 
+
 # Переходы в текущее состояние
-"""P.S. в данном случае не стал использовать @pytest.mark.parametrize 
-мне показалось что это излишне для буквально 5 функций, да и в 
-test_application_allowed я бы тоже убрал честно говоря, до этого читалось
-как будто бы лучше, мне показалось pytest.mark.parametrize  - очень ситуативная вещь
-"""
+
+# P.S. в данном случае не стал использовать @pytest.mark.parametrize
+# мне показалось что это излишне для буквально 5 функций, да и в
+# test_application_allowed я бы тоже убрал честно говоря, до этого читалось
+# как будто бы лучше, мне показалось pytest.mark.parametrize  - очень ситуативная вещь
+# + легко запутаться
 
 def test_application_saved_to_saved():
     """Проверка перехода сохранен -> сохранен"""
@@ -193,3 +188,5 @@ def test_application_rejected_to_rejected():
     app = Application(id="VID-000001", status=ApplicationStatus.REJECTED)
     app.move_to(ApplicationStatus.REJECTED)
     assert app.status is ApplicationStatus.REJECTED
+
+
