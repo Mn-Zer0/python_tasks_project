@@ -1,10 +1,9 @@
 import sys
 from pathlib import Path
 
-from .domain import SourceError, VacancySource, Application, ApplicationStatus
-from .sources import make_source
 from .application import filter_records, is_rule
-
+from .domain import Application, ApplicationStatus, SourceError, VacancySource
+from .sources import make_source
 
 file = Path(__file__).parent / "task.json"
 
@@ -17,7 +16,6 @@ def main() -> None:
     except SourceError as e:
         print(e)
         sys.exit(1)
-
 
     filtered = filter_records(vacancies, is_rule, key="status", value="open", limit=10)
 

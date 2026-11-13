@@ -3,14 +3,15 @@ from typing import Literal
 
 from pydantic import ValidationError
 
-from .storage import read_json, StorageFormatError
-from .schemas import ValidatedVacancy
-from .domain import Vacancy, Status, SourceError, VacancySource
 from .application import to_vacancy
+from .domain import SourceError, Status, Vacancy, VacancySource
+from .schemas import ValidatedVacancy
+from .storage import StorageFormatError, read_json
 
 
 class FixedSource:
     """Фиксированный источник вакансий"""
+
     def fetch(self) -> list[Vacancy]:
         return [
             Vacancy(id="VID-000001", title="Python", salary=120000, status=Status.OPEN),
@@ -23,6 +24,7 @@ class JsonFileSource:
     Читает данные, валидирует через ValidatedVacancy и возвращает
     доменные объекты
     """
+
     def __init__(self, path: Path) -> None:
         self._path = path
 

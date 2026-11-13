@@ -1,17 +1,18 @@
 from dataclasses import dataclass
 from enum import StrEnum
-
 from typing import Protocol
 
 
 class Status(StrEnum):
     """Статус вакансии"""
+
     OPEN = "open"
     CLOSED = "closed"
 
 
 class ApplicationStatus(StrEnum):
     """Статус вашей заявки на вакансию."""
+
     SAVED = "saved"
     APPLIED = "applied"
     INTERVIEW = "interview"
@@ -21,6 +22,7 @@ class ApplicationStatus(StrEnum):
 
 class DomainError(Exception):
     """Кастомный Exception"""
+
     pass
 
 
@@ -49,6 +51,7 @@ class Vacancy:
 @dataclass
 class Application:
     """Сущность Application"""
+
     id: str
     status: ApplicationStatus = ApplicationStatus.SAVED
 
@@ -58,12 +61,14 @@ class Application:
         if new not in ALLOWED[self.status]:
             raise TransitionError(
                 f"нельзя перейти из {self.status} в {new}; "
-                f"из {self.status} разрешено: {ALLOWED[self.status]}")
+                f"из {self.status} разрешено: {ALLOWED[self.status]}"
+            )
         self.status = new
 
 
 class SourceError(Exception):
     """Источник не смог отдать данные"""
+
     pass
 
 
@@ -71,12 +76,15 @@ class VacancySource(Protocol):
     """Источник вакансий
     Реализации возвращают готовые доменные объекты
     """
+
     def fetch(self) -> list[Vacancy]: ...
 
 
 class TransitionError(Exception):
     """Переход между этими состояниями запрещён правилами домена"""
+
     pass
+
 
 ALLOWED: dict[ApplicationStatus, frozenset[ApplicationStatus]] = {
     ApplicationStatus.SAVED: frozenset({ApplicationStatus.APPLIED}),
@@ -85,5 +93,3 @@ ALLOWED: dict[ApplicationStatus, frozenset[ApplicationStatus]] = {
     ApplicationStatus.REJECTED: frozenset({}),
     ApplicationStatus.OFFER: frozenset({}),
 }
-
-

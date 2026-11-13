@@ -1,10 +1,15 @@
 import pytest
+
+from job_tracker.domain import Status, Vacancy
 from job_tracker.schemas import ValidatedVacancy
-from job_tracker.domain import Vacancy, Status
+
 
 @pytest.fixture
 def valid_vacancy_model() -> ValidatedVacancy:
-    return ValidatedVacancy(id="VID-000001", title="Python Разработчик", salary=100000, status=Status.OPEN)
+    return ValidatedVacancy(
+        id="VID-000001", title="Python Разработчик", salary=100000, status=Status.OPEN
+    )
+
 
 @pytest.fixture
 def open_vacancy() -> Vacancy:
