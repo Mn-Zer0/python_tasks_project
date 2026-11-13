@@ -1,0 +1,58 @@
+[project]
+name = "job-tracker"
+version = "0.1.0"
+description = "Трекер поиска работы"
+readme = "README.md"
+authors = [
+    { name = "Mn_Zer0", email = "zevsoptifinehd@mail.ru" }
+]
+requires-python = ">=3.13"
+dependencies = [
+    "pydantic>=2.14.3",
+]
+
+[project.scripts]
+job_tracker = "job_tracker.main:main"
+
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I", "B", "UP"]
+
+[tool.uv.build-backend]
+module-name = "job_tracker"
+
+[tool.mypy]
+python_version = "3.13"
+warn_return_any = true
+warn_unused_configs = true
+check_untyped_defs = true
+
+[[tool.mypy.overrides]]
+module = ["job_tracker.domain", "job_tracker.schemas"]
+disallow_untyped_defs = true      # все функции должны иметь аннотации
+disallow_incomplete_defs = true   # аннотации должны быть полными
+disallow_untyped_calls = true     # нельзя вызывать функции без аннотаций
+disallow_any_generics = true      # нельзя использовать "голый" list, dict без параметров
+warn_return_any = true            # предупреждать, если возвращается Any
+strict_equality = true            # строгая проверка на равенство
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra --strict-markers --cov=job_tracker --cov-report=term-missing"
+markers = ["integration: тесты с настоящей БД и отдельными процессами"]
+
+[build-system]
+requires = ["uv_build>=0.13.7,<0.14.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "mypy>=2.4.1",
+    "pre-commit>=4.6.2",
+    "pytest>=9.2.0",
+    "pytest-cov>=7.1.0",
+    "ruff>=0.17.3",
+]
