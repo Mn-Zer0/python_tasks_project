@@ -41,7 +41,7 @@ strict_equality = true            # строгая проверка на рав�
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-addopts = "-ra --strict-markers"
+addopts = "-ra --strict-markers --cov=job_tracker --cov-report=term-missing"
 markers = ["integration: тесты с настоящей БД и отдельными процессами"]
 
 [build-system]
