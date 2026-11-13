@@ -9,10 +9,13 @@ authors = [
 requires-python = ">=3.13"
 dependencies = [
     "pydantic>=2.14.3",
+    "rich>=15.0.0",
+    "typer>=0.29.1",
 ]
 
 [project.scripts]
 job_tracker = "job_tracker.main:main"
+job_tracker_cli = "job_tracker.cli:app"
 
 [tool.ruff]
 line-length = 100
