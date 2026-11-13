@@ -27,7 +27,6 @@ def main() -> None:
 
     app = Application(id="VID-000001")
     app.move_to(ApplicationStatus.APPLIED)
-    print(app.status)
 
 
 if __name__ == "__main__":
