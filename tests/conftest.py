@@ -19,3 +19,9 @@ def open_vacancy() -> Vacancy:
 @pytest.fixture
 def closed_vacancy() -> Vacancy:
     return Vacancy(id="VID-000001", title="Python Разработчик", salary=100000, status=Status.CLOSED)
+
+@pytest.fixture
+def isolated_task_file(tmp_path):
+    tmp_task = tmp_path / "task.json"
+    tmp_task.write_text('[{"id": "VID-000001", "title": "Test", "salary": 100, "status": "open"}]', encoding="utf-8")
+    return tmp_task
