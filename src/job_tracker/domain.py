@@ -30,7 +30,7 @@ class DomainError(Exception):
 class Vacancy:
     """Вакансия - доменная сущность"""
 
-    id: str
+    id: int
     title: str
     salary: int
     status: Status
@@ -52,7 +52,8 @@ class Vacancy:
 class Application:
     """Сущность Application"""
 
-    id: str
+    id: int
+    vacancy_id: int
     status: ApplicationStatus = ApplicationStatus.SAVED
 
     def move_to(self, new: ApplicationStatus) -> None:
@@ -78,6 +79,16 @@ class VacancySource(Protocol):
     """
 
     def fetch(self) -> list[Vacancy]: ...
+
+class VacancyWriter(Protocol):
+    def seed(self, vacancy: Vacancy) -> bool: ...
+
+
+class ApplicationSource(Protocol):
+    """Протокол для Application"""
+    def get_by_id(self, vacancy_id: int) -> Application: ...
+    def save(self, application: Application) -> None: ...
+    def fetch(self) -> list[Application]: ...
 
 
 class TransitionError(Exception):
