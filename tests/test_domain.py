@@ -11,37 +11,37 @@ from job_tracker.schemas import ValidatedVacancy
 def test_vacancy_salary():
     """Тест отрицательного salary"""
     with pytest.raises(ValidationError):
-        ValidatedVacancy(id="VID-000001", title="X", salary=-100, status=Status.OPEN)
+        ValidatedVacancy(id=1, title="X", salary=-100, status=Status.OPEN)
 
 
 def test_vacancy_id():
     """Тест неправильного id (в данном случае недостаточной длины"""
     with pytest.raises(ValidationError):
-        ValidatedVacancy(id="VID-00001", title="X", salary=100, status=Status.OPEN)
+        ValidatedVacancy(id=1, title="X", salary=100, status=Status.OPEN)
 
 
 def test_vacancy_title():
     """Тест отсутствующего title"""
     with pytest.raises(ValidationError):
-        ValidatedVacancy(id="VID-000001", title="", salary=100, status=Status.OPEN)
+        ValidatedVacancy(id=1, title="", salary=100, status=Status.OPEN)
 
 
 def test_vacancy_title_length():
     """Тест слишком длинного title"""
     with pytest.raises(ValidationError):
-        ValidatedVacancy(id="VID-000001", title="a" * 201, salary=100, status=Status.OPEN)
+        ValidatedVacancy(id=1, title="a" * 201, salary=100, status=Status.OPEN)
 
 
 def test_vacancy_status():
     """Тест неправильного status"""
     with pytest.raises(ValidationError):
-        ValidatedVacancy(id="VID-000001", title="X", salary=100, status="opne")
+        ValidatedVacancy(id=1, title="X", salary=100, status="opne")
 
 
 def test_vacancy_types():
     """Тест соответствия типов (id, title, salary, status)"""
-    v = ValidatedVacancy(id="VID-000001", title="title", salary=100, status="open")
-    assert v.id == "VID-000001"
+    v = ValidatedVacancy(id=1, title="title", salary=100, status=Status.OPEN)
+    assert v.id == 1
     assert v.title == "title"
     assert v.salary == 100
     assert v.status is Status.OPEN
@@ -53,7 +53,7 @@ def test_vacancy_types():
 def test_to_vacancy_id(valid_vacancy_model):
     """Тест соответствия ValidatedVacancy.id и Vacancy.id"""
     vacancy_model = to_vacancy(valid_vacancy_model)
-    assert vacancy_model.id == "VID-000001"
+    assert vacancy_model.id == 1
 
 
 def test_to_vacancy_title(valid_vacancy_model):
@@ -127,7 +127,7 @@ def test_vacancy_status_open_to_open(open_vacancy):
 )
 def test_application_allowed(current, new):
     """Тестирование разрешенных переходов"""
-    app = Application(id="VID-000001", status=current)
+    app = Application(id=1, status=current)
     app.move_to(new)
     assert app.status is new
 
@@ -174,7 +174,7 @@ def test_application_allowed(current, new):
 )
 def test_application_forbidden(current, new):
     """Тестирование запрещенных переходов"""
-    app = Application(id="VID-000001", status=current)
+    app = Application(id=1, status=current)
     with pytest.raises(TransitionError):
         app.move_to(new)
     assert app.status is current
@@ -191,34 +191,34 @@ def test_application_forbidden(current, new):
 
 def test_application_saved_to_saved():
     """Проверка перехода сохранен -> сохранен"""
-    app = Application(id="VID-000001", status=ApplicationStatus.SAVED)
+    app = Application(id=1, status=ApplicationStatus.SAVED)
     app.move_to(ApplicationStatus.SAVED)
     assert app.status is ApplicationStatus.SAVED
 
 
 def test_application_applied_to_applied():
     """Проверка перехода откликнулся -> откликнулся"""
-    app = Application(id="VID-000001", status=ApplicationStatus.APPLIED)
+    app = Application(id=1, status=ApplicationStatus.APPLIED)
     app.move_to(ApplicationStatus.APPLIED)
     assert app.status is ApplicationStatus.APPLIED
 
 
 def test_application_interview_to_interview():
     """Проверка перехода собеседование -> собеседование"""
-    app = Application(id="VID-000001", status=ApplicationStatus.INTERVIEW)
+    app = Application(id=1, status=ApplicationStatus.INTERVIEW)
     app.move_to(ApplicationStatus.INTERVIEW)
     assert app.status is ApplicationStatus.INTERVIEW
 
 
 def test_application_offer_to_offer():
     """Проверка перехода оффер -> оффер"""
-    app = Application(id="VID-000001", status=ApplicationStatus.OFFER)
+    app = Application(id=1, status=ApplicationStatus.OFFER)
     app.move_to(ApplicationStatus.OFFER)
     assert app.status is ApplicationStatus.OFFER
 
 
 def test_application_rejected_to_rejected():
     """Проверка перехода отказ -> отказ"""
-    app = Application(id="VID-000001", status=ApplicationStatus.REJECTED)
+    app = Application(id=1, status=ApplicationStatus.REJECTED)
     app.move_to(ApplicationStatus.REJECTED)
     assert app.status is ApplicationStatus.REJECTED
