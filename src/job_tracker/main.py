@@ -3,13 +3,13 @@ from pathlib import Path
 
 from .application import filter_records, is_rule
 from .domain import Application, ApplicationStatus, SourceError, VacancySource
-from .sources import make_source
+from .sources import make_vacancy_source
 
 file = Path(__file__).parent / "task.json"
 
 
 def main() -> None:
-    source: VacancySource = make_source("json", file)
+    source: VacancySource = make_vacancy_source("db")
 
     try:
         vacancies = source.fetch()
@@ -25,7 +25,7 @@ def main() -> None:
     else:
         print("Записи не найдены")
 
-    app = Application(id="VID-000001")
+    app = Application(id=1)
     app.move_to(ApplicationStatus.APPLIED)
 
 
