@@ -7,18 +7,18 @@ from job_tracker.schemas import ValidatedVacancy
 @pytest.fixture
 def valid_vacancy_model() -> ValidatedVacancy:
     return ValidatedVacancy(
-        id="VID-000001", title="Python Разработчик", salary=100000, status=Status.OPEN
+        id=1, title="Python Разработчик", salary=100000, status=Status.OPEN
     )
 
 
 @pytest.fixture
 def open_vacancy() -> Vacancy:
-    return Vacancy(id="VID-000001", title="Python Разработчик", salary=100000, status=Status.OPEN)
+    return Vacancy(id=1, title="Python Разработчик", salary=100000, status=Status.OPEN)
 
 
 @pytest.fixture
 def closed_vacancy() -> Vacancy:
-    return Vacancy(id="VID-000001", title="Python Разработчик", salary=100000, status=Status.CLOSED)
+    return Vacancy(id=1, title="Python Разработчик", salary=100000, status=Status.CLOSED)
 
 @pytest.fixture
 def isolated_task_file(tmp_path):
