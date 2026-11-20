@@ -1,0 +1,7 @@
+[
+    {"id": "VID-000001", "title": "Python Разработчик", "salary": 120000, "status": "open"},
+    {"id": "VID-000002", "title": "Java Разработчик", "salary": 150000, "status": "closed"},
+    {"id": "VID-000003", "title": "Frontend Разработчик", "salary": 100000, "status": "open"},
+    {"id": "VID-000004", "title": "Data Scientist", "salary": 180000, "status": "open"},
+    {"id": "VID-000005", "title": "QA Engineer", "salary": 80000, "status": "closed"}
+]
