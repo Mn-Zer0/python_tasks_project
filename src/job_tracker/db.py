@@ -16,7 +16,6 @@ class VacancyRow(Base):
     status: Mapped[str]
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.now)
 
-    # Связь один-ко-многим: у вакансии много откликов
     applications: Mapped[list["ApplicationRow"]] = relationship(back_populates="vacancy")
 
 
@@ -27,5 +26,4 @@ class ApplicationRow(Base):
     vacancy_id: Mapped[int] = mapped_column(ForeignKey("vacancy.id", ondelete="CASCADE"))
     status: Mapped[str]
 
-    # Связь с вакансией
     vacancy: Mapped[VacancyRow] = relationship(back_populates="applications")
