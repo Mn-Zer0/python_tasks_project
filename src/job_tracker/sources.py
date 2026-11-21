@@ -9,7 +9,8 @@ from dotenv import load_dotenv
 import os
 
 from .application import to_vacancy
-from .domain import SourceError, Status, Vacancy, VacancySource, ApplicationSource, Application, ApplicationStatus, VacancyWriter
+from .domain import SourceError, Status, Vacancy, VacancySource, ApplicationSource, Application, ApplicationStatus, \
+    VacancyWriter, VacancyReader
 from .schemas import ValidatedVacancy
 from .storage import StorageFormatError, read_json
 from .db import VacancyRow, ApplicationRow
@@ -25,7 +26,6 @@ class FixedSource:
             Vacancy(id=1, title="Python", salary=120000, status=Status.OPEN),
             Vacancy(id=2, title="Java", salary=150000, status=Status.CLOSED),
         ]
-
 
 class JsonFileSource:
     """Источник вакансий из JSON-файла.
@@ -47,7 +47,6 @@ class JsonFileSource:
             raise SourceError(f"Не удалось прочитать {self._path}: {e}") from e
         except ValidationError as e:
             raise SourceError(f"Данные в {self._path} не прошли валидацию: {e}") from e
-
 
 class DatabaseVacancySource:
     """Источник вакансий из базы данных"""
@@ -133,11 +132,15 @@ class DatabaseApplicationSource:
 
             return applications
 
-
 def make_application_source() -> ApplicationSource:
     return DatabaseApplicationSource()
 
+
 class VacancyDatabaseWriter:
+    """Источник вакансий из базы данных для записи в бд
+    Нужен для того чтобы не ломать фабрику make_vacancy_source и
+    все её источники
+    """
     def seed(self, vacancy: Vacancy) -> bool:
         with Session(engine) as session:
             try:
@@ -157,3 +160,45 @@ class VacancyDatabaseWriter:
 
 def make_source_vacancy_writer() -> VacancyWriter:
     return VacancyDatabaseWriter()
+
+
+class VacancyDatabaseReader:
+    """Источник вакансий из базы данных, возвращает отсортированные вакансии"""
+
+    def fetch(self,
+              status: str | None = None,
+              sort_by: str = "id",
+              order: str = "asc",
+              limit: int = 10,
+              offset: int = 0
+              ) -> list[Vacancy]:
+        with Session(engine) as session:
+            r = select(VacancyRow)
+
+            if status is not None:
+                r = r.where(VacancyRow.status == status)
+
+            column = getattr(VacancyRow, sort_by)
+            direction = getattr(column, order)()
+
+            r = r.order_by(direction, VacancyRow.id.asc())
+            r = r.limit(limit).offset(offset)
+
+            rows = session.scalars(r).all()
+
+            vacancies = []
+
+            for row in rows:
+                v = Vacancy(
+                    id = row.id,
+                    title = row.title,
+                    salary = row.salary,
+                    status = Status(row.status)
+                )
+                vacancies.append(v)
+
+            return vacancies
+
+
+def make_source_vacancy_reader() -> VacancyReader:
+    return VacancyDatabaseReader()
