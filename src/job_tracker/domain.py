@@ -74,15 +74,26 @@ class SourceError(Exception):
 
 
 class VacancySource(Protocol):
-    """Источник вакансий
+    """Протокол получения вакансий
     Реализации возвращают готовые доменные объекты
     """
 
     def fetch(self) -> list[Vacancy]: ...
 
 class VacancyWriter(Protocol):
+    """Протокол записи вакансий в базу данных"""
     def seed(self, vacancy: Vacancy) -> bool: ...
 
+class VacancyReader(Protocol):
+    """Протокол сортировки (в будущем может заменить или стать частью VacancySource)"""
+    def fetch(
+            self,
+            status: str | None = None,
+            sort_by: str = "id",
+            order: str = "asc",
+            limit: int = 10,
+            offset: int = 0
+    ) -> list[Vacancy]: ...
 
 class ApplicationSource(Protocol):
     """Протокол для Application"""
