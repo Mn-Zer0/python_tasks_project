@@ -4,7 +4,7 @@ from rich.console import Console
 from rich.table import Table
 import logging
 
-from .sources import make_vacancy_source, make_application_source, make_source_vacancy_writer
+from .sources import make_vacancy_source, make_application_source, make_source_vacancy_writer, make_source_vacancy_reader
 from .domain import Application, ApplicationStatus, TransitionError, Vacancy
 from .storage import read_json
 
@@ -116,6 +116,34 @@ def seed_vacancies(file: Path):
             skipped += 1
 
     console.print(f"Добавлено: {added}, пропущено: {skipped}")
+
+@app.command("read_vacancies")
+def read_vacancies(
+        sort_by: str = "id",
+        order: str = "asc",
+        limit: int = 10,
+        offset: int = 0,
+        status: str | None = None,
+):
+    vacancies = make_source_vacancy_reader().fetch(status, sort_by, order, limit, offset)
+
+    table = Table(title="Список вакансий")
+
+    table.add_column("ID", style="blue")
+    table.add_column("Название", style="purple")
+    table.add_column("Зарплата", style="green")
+    table.add_column("Статус вакансии")
+
+    for v in vacancies:
+        table.add_row(
+            str(v.id),
+            v.title,
+            str(v.salary),
+            v.status
+        )
+
+    console.print(table)
+
 
 if __name__ == "__main__":
     app()
