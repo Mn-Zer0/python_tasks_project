@@ -15,9 +15,9 @@ def test_vacancy_salary():
 
 
 def test_vacancy_id():
-    """Тест неправильного id (в данном случае недостаточной длины"""
+    """Тест неправильного id"""
     with pytest.raises(ValidationError):
-        ValidatedVacancy(id=1, title="X", salary=100, status=Status.OPEN)
+        ValidatedVacancy(id="1", title="X", salary=100, status=Status.OPEN)
 
 
 def test_vacancy_title():
@@ -127,7 +127,7 @@ def test_vacancy_status_open_to_open(open_vacancy):
 )
 def test_application_allowed(current, new):
     """Тестирование разрешенных переходов"""
-    app = Application(id=1, status=current)
+    app = Application(id=1, vacancy_id=1, status=current)
     app.move_to(new)
     assert app.status is new
 
@@ -174,7 +174,7 @@ def test_application_allowed(current, new):
 )
 def test_application_forbidden(current, new):
     """Тестирование запрещенных переходов"""
-    app = Application(id=1, status=current)
+    app = Application(id=1, vacancy_id=1, status=current)
     with pytest.raises(TransitionError):
         app.move_to(new)
     assert app.status is current
@@ -191,34 +191,34 @@ def test_application_forbidden(current, new):
 
 def test_application_saved_to_saved():
     """Проверка перехода сохранен -> сохранен"""
-    app = Application(id=1, status=ApplicationStatus.SAVED)
+    app = Application(id=1, vacancy_id=1, status=ApplicationStatus.SAVED)
     app.move_to(ApplicationStatus.SAVED)
     assert app.status is ApplicationStatus.SAVED
 
 
 def test_application_applied_to_applied():
     """Проверка перехода откликнулся -> откликнулся"""
-    app = Application(id=1, status=ApplicationStatus.APPLIED)
+    app = Application(id=1, vacancy_id=1, status=ApplicationStatus.APPLIED)
     app.move_to(ApplicationStatus.APPLIED)
     assert app.status is ApplicationStatus.APPLIED
 
 
 def test_application_interview_to_interview():
     """Проверка перехода собеседование -> собеседование"""
-    app = Application(id=1, status=ApplicationStatus.INTERVIEW)
+    app = Application(id=1, vacancy_id=1, status=ApplicationStatus.INTERVIEW)
     app.move_to(ApplicationStatus.INTERVIEW)
     assert app.status is ApplicationStatus.INTERVIEW
 
 
 def test_application_offer_to_offer():
     """Проверка перехода оффер -> оффер"""
-    app = Application(id=1, status=ApplicationStatus.OFFER)
+    app = Application(id=1, vacancy_id=1, status=ApplicationStatus.OFFER)
     app.move_to(ApplicationStatus.OFFER)
     assert app.status is ApplicationStatus.OFFER
 
 
 def test_application_rejected_to_rejected():
     """Проверка перехода отказ -> отказ"""
-    app = Application(id=1, status=ApplicationStatus.REJECTED)
+    app = Application(id=1, vacancy_id=1, status=ApplicationStatus.REJECTED)
     app.move_to(ApplicationStatus.REJECTED)
     assert app.status is ApplicationStatus.REJECTED
