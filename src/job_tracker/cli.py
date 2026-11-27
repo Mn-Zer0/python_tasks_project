@@ -78,7 +78,7 @@ def get_list_applications(
 
 @app.command("application_move")
 def move_status(vacancy_id: int, new_status: ApplicationStatus):
-    """Функция изменения статуса application"""
+    """Изменение статуса application"""
     source = make_application_source()
 
     status_app = source.get_by_id(vacancy_id)
@@ -125,6 +125,7 @@ def read_vacancies(
         offset: int = 0,
         status: str | None = None,
 ):
+    """Получение списка вакансий по заданному фильтру"""
     vacancies = make_source_vacancy_reader().fetch(status, sort_by, order, limit, offset)
 
     table = Table(title="Список вакансий")
