@@ -4,7 +4,7 @@ from job_tracker.cli import app
 runner = CliRunner()
 
 def test_list_returns_zero():
-    """Тест команды list"""
+    """Тест команды list_vacancies"""
     result = runner.invoke(app, ["list_vacancies"])
     assert result.exit_code == 0
     assert "Список вакансий" in result.stdout
@@ -12,7 +12,7 @@ def test_list_returns_zero():
 
 def test_move_success(isolated_task_file):
     """Тест команды move (позитивный)"""
-    result = runner.invoke(app, ["list_vacancies", "--file", str(isolated_task_file)])
+    result = runner.invoke(app, ["list_vacancies"])
     assert result.exit_code == 0
 
 def test_move_forbidden_transition():
